@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <h1 th:text="${#httpServletRequest.requestURI}"></h1>
+</div>
+<div>
+    <a th:text="'/..'" th:href="${prevDirectory}"></a>
+</div>
+<div>
+    <tr th:each="directory: ${directories}">
+        <td>
+            <a th:text="'/'+${directory}" th:href="${#httpServletRequest.requestURI}+'/'+${directory}"></a>
+        </td>
+    </tr>
+</div>
+<div>
+    <tr th:each="file: ${files}">
+        <td>
+            <a th:text="'/'+${file}" th:href="'/download'+'?id='+'1'"></a>
+        </td>
+    </tr>
+</div>
+<div>
+    <form method="post" enctype="multipart/form-data" action="/upload">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+        <input type="hidden" name="path" th:value="${pathToUpload}">
+    </form>
+</div>
+</body>
+</html>
