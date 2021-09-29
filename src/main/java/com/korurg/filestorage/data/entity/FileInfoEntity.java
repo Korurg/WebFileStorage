@@ -24,7 +24,11 @@ public class FileInfoEntity {
     @Column(name = "name")
     private String fileName;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "directory_id")
+    private DirectoryEntity directory;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "file_id")
     private FileEntity file;
 

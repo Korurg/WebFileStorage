@@ -21,5 +21,5 @@ public class FileEntity{
     private byte[] content;
 
     @OneToOne(optional = false, mappedBy = "file")
-    private FileInfoEntity fileInfoEntity;
+    private FileInfoEntity fileInfo;
 }

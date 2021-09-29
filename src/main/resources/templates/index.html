@@ -6,28 +6,34 @@
 </head>
 <body>
 <div>
-    <h1 th:text="${#httpServletRequest.requestURI}"></h1>
+    <h1 th:text="${#httpServletRequest.requestURI.substring('/files'.length)}"></h1>
 </div>
 <div>
-    <a th:text="'/..'" th:href="${prevDirectory}"></a>
+    <a th:text="'/..'" th:href="${baseUrl}+${prevDirectory}" th:if="${!#strings.isEmpty(prevDirectory)}"></a>
 </div>
 <div>
     <tr th:each="directory: ${directories}">
         <td>
-            <a th:text="'/'+${directory}" th:href="${#httpServletRequest.requestURI}+'/'+${directory}"></a>
+            <div>
+                <a th:text="'/'+${directory.name}" th:href="${#httpServletRequest.requestURI}+'/'+${directory.name}"></a>
+            </div>
         </td>
     </tr>
 </div>
+
 <div>
     <tr th:each="file: ${files}">
         <td>
-            <a th:text="'/'+${file}" th:href="'/download'+'?id='+'1'"></a>
+            <div>
+                <a th:text="'/'+${file.fileName}" th:href="'/files/download'+'?id='+${file.id}"></a>
+            </div>
         </td>
     </tr>
 </div>
+<br/>
 <div>
-    <form method="post" enctype="multipart/form-data" action="/upload">
-        <input type="file" name="file">
+    <form method="post" enctype="multipart/form-data" action="/files/upload">
+        <input type="file" name="file" required="required">
         <input type="submit" value="Upload">
         <input type="hidden" name="path" th:value="${pathToUpload}">
     </form>

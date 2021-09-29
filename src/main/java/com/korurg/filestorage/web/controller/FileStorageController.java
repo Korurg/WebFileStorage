@@ -7,6 +7,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,22 +26,34 @@ public class FileStorageController {
     private final FileStorageService fileStorageService;
 
     @GetMapping()
-    public String redirectToSharedFiles() {
-        return "redirect:/shared";
+    public String redirectToSharedFilesFromMain() {
+        return "redirect:/files/shared";
     }
 
-    @GetMapping("/shared/**")
+    @GetMapping("files/**")
     public String sharedFiles(HttpServletRequest request, Model model) {
-        model.addAttribute("directories", fileStorageService.getDirectories(request.getRequestURI()));
-        model.addAttribute("files", fileStorageService.getFiles(request.getRequestURI()));
+        int prefixLength = "files/".length();
+        String path = request.getRequestURI().substring(prefixLength);
+        model.addAttribute("directories", fileStorageService.getDirectories(path));
+        model.addAttribute("files", fileStorageService.getFiles(path));
         model.addAttribute("prevDirectory", getPreviouslyDirectory(request));
-        model.addAttribute("pathToUpload", request.getRequestURI());
+        model.addAttribute("baseUrl", getBaseUrl(request));
+        model.addAttribute("pathToUpload", path);
 
         return "index";
     }
 
-    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    //TODO:Найти лучший способ получать baseurl
+    private String getBaseUrl(HttpServletRequest request) {
+        String scheme = request.getScheme();
+        int prefixLength = scheme.length() + 3;
+        int firstSlashIndex = request.getRequestURL().substring(prefixLength).indexOf('/');
+        return request.getRequestURL().substring(0, firstSlashIndex + prefixLength);
+    }
+
+    @GetMapping(value = "files/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
+    @Transactional
     public HttpEntity<byte[]> downloadFile(@RequestParam int id) {
         FileInfoEntity fileInfo = fileStorageService.getFile(id);
         HttpHeaders headers = new HttpHeaders();
@@ -48,21 +61,20 @@ public class FileStorageController {
         return new HttpEntity(fileInfo.getFile().getContent(), headers);
     }
 
-    @PostMapping("/upload")
-    public String uploadFile(HttpServletRequest request,
-                             @RequestParam("file") MultipartFile file,
+    //TODO:Запрет на загрузку пустых файлов
+    @PostMapping("files/upload")
+    public String uploadFile(@RequestParam("file") MultipartFile file,
                              @RequestParam("path") String path) {
         try {
-            //TODO:
-            fileStorageService.saveFile(file.getBytes());
+            fileStorageService.saveFile(file.getBytes(), path, file.getOriginalFilename());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "redirect:" + path;
+        return "redirect:/files" + path;
     }
 
     private String getPreviouslyDirectory(HttpServletRequest request) {
-        String url = request.getRequestURL().toString();
+        String url = request.getRequestURI();
         return url.substring(0, url.lastIndexOf('/'));
     }
 
