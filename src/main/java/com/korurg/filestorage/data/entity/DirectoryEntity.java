@@ -24,9 +24,9 @@ public class DirectoryEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private DirectoryEntity parent;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "directory")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "directory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FileInfoEntity> files;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DirectoryEntity> childs;
 }

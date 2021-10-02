@@ -10,6 +10,10 @@ public interface FileStorageService {
 
     public List<FileInfoEntity> getFiles(String path);
 
+    byte[] getFileContent(FileInfoEntity fileInfo);
+
+    byte[] getFileContent(long id);
+
     public List<DirectoryEntity> getDirectories(String path);
 
     void saveFile(byte[] fileContent);

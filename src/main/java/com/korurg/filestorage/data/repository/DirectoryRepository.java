@@ -29,10 +29,10 @@ public interface DirectoryRepository extends JpaRepository<DirectoryEntity, Long
         return getOrCreateDirectory(directoryName, 0);
     }
 
-    @Query(value = "select * from directory where id = 0", nativeQuery = true)
+    @Query(value = "select dir from DirectoryEntity dir where dir.id = 0")
     DirectoryEntity getRoot();
 
-    @Query(value = "select * from directory where parent_id=:parentId and name=:name", nativeQuery = true)
+    @Query(value = "select dir from DirectoryEntity dir where dir.parent.id=:parentId and dir.parent.name=:name")
     Optional<DirectoryEntity> getDirectoryByNameAndParentId(@Param("name") String name, @Param("parentId") long parentId);
 
 }

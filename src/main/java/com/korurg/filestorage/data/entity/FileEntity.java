@@ -18,8 +18,11 @@ public class FileEntity{
     private Long id;
 
     @Lob
+    @Column(name = "content")
     private byte[] content;
 
-    @OneToOne(optional = false, mappedBy = "file")
+    @OneToOne(optional = false)
+    @MapsId
+    @JoinColumn(name = "id")
     private FileInfoEntity fileInfo;
 }

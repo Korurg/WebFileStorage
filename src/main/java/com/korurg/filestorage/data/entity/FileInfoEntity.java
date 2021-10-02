@@ -28,8 +28,8 @@ public class FileInfoEntity {
     @JoinColumn(name = "directory_id")
     private DirectoryEntity directory;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "file_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false, orphanRemoval = true, mappedBy = "fileInfo")
+    @PrimaryKeyJoinColumn
     private FileEntity file;
 
 }

@@ -4,6 +4,7 @@ import com.korurg.filestorage.data.entity.DirectoryEntity;
 import com.korurg.filestorage.data.entity.FileEntity;
 import com.korurg.filestorage.data.entity.FileInfoEntity;
 import com.korurg.filestorage.data.repository.DirectoryRepository;
+import com.korurg.filestorage.data.repository.FileInfoRepository;
 import com.korurg.filestorage.data.repository.FileRepository;
 import com.korurg.filestorage.service.api.FileStorageService;
 import lombok.AllArgsConstructor;
@@ -18,15 +19,25 @@ import java.util.List;
 @AllArgsConstructor
 public class FileStorageServiceImpl implements FileStorageService {
 
-    private final FileRepository fileRepository;
+    private final FileInfoRepository fileInfoRepository;
     private final DirectoryRepository directoryRepository;
+    private final FileRepository fileRepository;
 
     @Override
     public List<FileInfoEntity> getFiles(String path) {
         DirectoryEntity directoryEntity = getDirectoryEntityFromPath(path);
-        return fileRepository.getFilesByDirectoryId(directoryEntity.getId());
+        return fileInfoRepository.getFilesByDirectoryId(directoryEntity.getId());
     }
 
+    @Override
+    public byte[] getFileContent(FileInfoEntity fileInfo) {
+        return getFileContent(fileInfo.getId());
+    }
+
+    @Override
+    public byte[] getFileContent(long id) {
+        return fileRepository.getFileContent(id).getContent();
+    }
 
     @Override
     public List<DirectoryEntity> getDirectories(String path) {
@@ -45,12 +56,12 @@ public class FileStorageServiceImpl implements FileStorageService {
                 .build();
         file.setFileInfo(fileInfo);
 
-        fileRepository.save(fileInfo);
+        fileInfoRepository.save(fileInfo);
     }
 
     @Override
     public FileInfoEntity getFile(long id) {
-        return fileRepository.getById(id);
+        return fileInfoRepository.getById(id);
     }
 
     @Override
@@ -79,7 +90,7 @@ public class FileStorageServiceImpl implements FileStorageService {
                 .build();
         fileEntity.setFileInfo(fileInfo);
 
-        fileRepository.save(fileInfo);
+        fileInfoRepository.save(fileInfo);
     }
 
     private DirectoryEntity getDirectoryEntityFromPath(String path) {

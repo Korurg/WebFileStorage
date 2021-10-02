@@ -7,7 +7,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,12 +52,11 @@ public class FileStorageController {
 
     @GetMapping(value = "files/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    @Transactional
-    public HttpEntity<byte[]> downloadFile(@RequestParam int id) {
+    public HttpEntity<byte[]> downloadFile(@RequestParam long id) {
         FileInfoEntity fileInfo = fileStorageService.getFile(id);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", fileInfo.getFileName());
-        return new HttpEntity(fileInfo.getFile().getContent(), headers);
+        return new HttpEntity(fileStorageService.getFileContent(fileInfo), headers);
     }
 
     //TODO:Запрет на загрузку пустых файлов
@@ -70,6 +68,7 @@ public class FileStorageController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return "redirect:/files" + path;
     }
 
