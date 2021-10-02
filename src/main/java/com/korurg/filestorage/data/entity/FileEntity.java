@@ -4,13 +4,14 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "files")
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
+@Table(name = "files")
 public class FileEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

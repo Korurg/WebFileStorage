@@ -32,7 +32,7 @@ public interface DirectoryRepository extends JpaRepository<DirectoryEntity, Long
     @Query(value = "select dir from DirectoryEntity dir where dir.id = 0")
     DirectoryEntity getRoot();
 
-    @Query(value = "select dir from DirectoryEntity dir where dir.parent.id=:parentId and dir.parent.name=:name")
+    @Query(value = "select dir from DirectoryEntity dir where dir.parent.id=:parentId and dir.name=:name")
     Optional<DirectoryEntity> getDirectoryByNameAndParentId(@Param("name") String name, @Param("parentId") long parentId);
 
 }

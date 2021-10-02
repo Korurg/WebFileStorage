@@ -5,13 +5,14 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.OffsetDateTime;
 
-@Entity
-@Table(name = "files_info")
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
+@Table(name = "files_info",uniqueConstraints = {@UniqueConstraint(columnNames = {"name","directory_id"})})
 public class FileInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
