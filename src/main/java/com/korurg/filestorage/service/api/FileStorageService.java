@@ -21,5 +21,5 @@ public interface FileStorageService {
 
     FileInfoEntity getFile(long id);
 
-    void saveFile(byte[] file, String path, String fileName) throws IOException;
+    void saveFile(byte[] file, String path, String fileName);
 }

@@ -10,7 +10,6 @@ import com.korurg.filestorage.service.api.FileStorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +64,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public void saveFile(byte[] file, String path, String fileName) throws IOException {
+    public void saveFile(byte[] file, String path, String fileName) {
         String[] directories = Arrays.stream(path.split("/"))
                 .filter(s -> !s.isEmpty())
                 .toArray(String[]::new);
